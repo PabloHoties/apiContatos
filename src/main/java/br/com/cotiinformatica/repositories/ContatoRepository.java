@@ -17,7 +17,7 @@ public class ContatoRepository {
 		Connection connection = ConnectionFactory.getConnection();
 
 		PreparedStatement statement = connection
-				.prepareStatement("insert into contato(id, nome, telefone. categoria_id) values (?,?,?,?");
+				.prepareStatement("insert into contato(id, nome, telefone, categoria_id) values (?,?,?,?)");
 
 		statement.setObject(1, contato.getId());
 		statement.setString(2, contato.getNome());
@@ -77,5 +77,27 @@ public class ContatoRepository {
 
 		connection.close();
 		return lista;
+	}
+	
+	public Contato findById(UUID id) throws Exception {
+		Connection connection = ConnectionFactory.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement("select * from contato where id=?");
+		
+		statement.setObject(1, id);
+		ResultSet resultSet = statement.executeQuery();
+		
+		Contato contato = null;
+		
+		if (resultSet.next()) {
+			contato = new Contato();
+			contato.setCategoria(new Categoria());
+			contato.setId(UUID.fromString(resultSet.getString("id")));
+			contato.setNome(resultSet.getString("nome"));
+			contato.setTelefone(resultSet.getString("telefone"));
+			contato.getCategoria().setId(UUID.fromString(resultSet.getString("categoria_id")));
+		}
+		connection.close();
+		return contato;
 	}
 }
