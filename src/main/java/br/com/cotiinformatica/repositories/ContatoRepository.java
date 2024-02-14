@@ -57,7 +57,9 @@ public class ContatoRepository {
 	public List<Contato> findAll() throws Exception {
 		Connection connection = ConnectionFactory.getConnection();
 
-		PreparedStatement statement = connection.prepareStatement("select * from contato order by nome");
+		PreparedStatement statement = connection
+				.prepareStatement("select co.id, co.nome, co.telefone, ca.id as idcategoria, ca.nome as nomecategoria "
+						+ "from contato co inner join categoria ca on ca.id = co.categoria_id " + "order by co.nome");
 
 		ResultSet resultSet = statement.executeQuery();
 
@@ -70,7 +72,8 @@ public class ContatoRepository {
 			contato.setId(UUID.fromString(resultSet.getString("id")));
 			contato.setNome(resultSet.getString("nome"));
 			contato.setTelefone(resultSet.getString("telefone"));
-			contato.getCategoria().setId(UUID.fromString(resultSet.getString("categoria_id")));
+			contato.getCategoria().setId(UUID.fromString(resultSet.getString("idcategoria")));
+			contato.getCategoria().setNome(resultSet.getString("nomecategoria"));
 
 			lista.add(contato);
 		}
@@ -78,24 +81,27 @@ public class ContatoRepository {
 		connection.close();
 		return lista;
 	}
-	
+
 	public Contato findById(UUID id) throws Exception {
 		Connection connection = ConnectionFactory.getConnection();
-		
-		PreparedStatement statement = connection.prepareStatement("select * from contato where id=?");
-		
+
+		PreparedStatement statement = connection
+				.prepareStatement("select co.id, co.nome, co.telefone, ca.id as idcategoria, ca.nome as nomecategoria "
+						+ "from contato co inner join categoria ca on ca.id = co.categoria_id " + "where co.id = ?");
+
 		statement.setObject(1, id);
 		ResultSet resultSet = statement.executeQuery();
-		
+
 		Contato contato = null;
-		
+
 		if (resultSet.next()) {
 			contato = new Contato();
 			contato.setCategoria(new Categoria());
 			contato.setId(UUID.fromString(resultSet.getString("id")));
 			contato.setNome(resultSet.getString("nome"));
 			contato.setTelefone(resultSet.getString("telefone"));
-			contato.getCategoria().setId(UUID.fromString(resultSet.getString("categoria_id")));
+			contato.getCategoria().setId(UUID.fromString(resultSet.getString("idcategoria")));
+			contato.getCategoria().setNome(resultSet.getString("nomecategoria"));
 		}
 		connection.close();
 		return contato;
