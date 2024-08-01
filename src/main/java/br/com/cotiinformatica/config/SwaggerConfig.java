@@ -15,7 +15,7 @@ public class SwaggerConfig {
 		
 		return new OpenAPI().components(new Components()).info(new Info()
 				.title("API Contatos - COTI Informática")
-				.description("Projeto Spring Boot API para controle de clientes")
+				.description("Projeto Spring Boot API para controle de contatos")
 				.version("v1"));
 	}
 }

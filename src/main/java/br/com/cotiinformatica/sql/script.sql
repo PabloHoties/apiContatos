@@ -1,22 +1,22 @@
 --Criar tabela de categoria
-create table categoria(
-			id			UUID			primary key,
-			nome		varchar(29)		not null  unique
+CREATE TABLE categoria(
+			id			UUID				PRIMARY KEY,
+			nome		VARCHAR(29)		NOT NULL UNIQUE
 );
 
 --Criar tabela de contatos
-create table contato(
+CREATE TABLE contato(
 
-			id				UUID			primary key,
-			nome			varchar(25)		not null,
-			telefone			varchar(15)		not null,
-			categoria_id		uuid			not null,
-			foreign key(categoria_id)
-				references categoria(id)
+			id				UUID				PRIMARY KEY,
+			nome			VARCHAR(25)		NOT NULL,
+			telefone			VARCHAR(15)		NOT NULL,
+			categoria_id		uuid				NOT NULL,
+			FOREIGN KEY(categoria_id)
+				REFERENCES categoria(id)
 );
 
 --Cadastrar categorias
-insert into categoria (id, nome) values (gen_random_uuid(), 'Categoria pessoa física');
-insert into categoria (id, nome) values (gen_random_uuid(), 'Categoria pessoa jurídica');
-insert into categoria (id, nome) values (gen_random_uuid(), 'Categoria pessoa preferencial');
-insert into categoria (id, nome) values (gen_random_uuid(), 'Categoria pessoa vip');
+INSERT INTO categoria (id, nome) VALUES (gen_random_uuid(), 'Categoria pessoa física');
+INSERT INTO categoria (id, nome) VALUES (gen_random_uuid(), 'Categoria pessoa jurídica');
+INSERT INTO categoria (id, nome) VALUES (gen_random_uuid(), 'Categoria pessoa preferencial');
+INSERT INTO categoria (id, nome) VALUES (gen_random_uuid(), 'Categoria pessoa vip');

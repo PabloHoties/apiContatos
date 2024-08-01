@@ -15,7 +15,8 @@ public class CategoriaRepository {
 	public List<Categoria> findAll() throws Exception {
 		Connection connection = ConnectionFactory.getConnection();
 
-		PreparedStatement statement = connection.prepareStatement("select * from categoria order by nome");
+		PreparedStatement statement = connection.prepareStatement(
+				"SELECT id, nome FROM categoria ORDER BY nome");
 
 		ResultSet resultSet = statement.executeQuery();
 
@@ -37,7 +38,7 @@ public class CategoriaRepository {
 	public Categoria findById(UUID id) throws Exception {
 		Connection connection = ConnectionFactory.getConnection();
 
-		PreparedStatement statement = connection.prepareStatement("select * from categoria where id=?");
+		PreparedStatement statement = connection.prepareStatement("SELECT id, nome FROM categoria WHERE id=?");
 
 		statement.setObject(1, id);
 		ResultSet resultSet = statement.executeQuery();

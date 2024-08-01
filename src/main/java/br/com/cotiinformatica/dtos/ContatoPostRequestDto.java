@@ -16,6 +16,7 @@ public class ContatoPostRequestDto {
 	private String nome;
 
 	@Pattern(regexp = "\\(\\d{2}\\)\\s\\d{5}-\\d{4}", message = "Por favor, informe o telefone no formato: '(99) 99999-9999'.")
+	@NotBlank(message = "Por favor, informe o telefone do contato.")
 	private String telefone;
 
 	@NotNull(message = "Por favor, informe o id da categoria.")

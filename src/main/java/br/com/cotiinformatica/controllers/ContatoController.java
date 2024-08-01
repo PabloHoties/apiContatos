@@ -2,7 +2,10 @@ package br.com.cotiinformatica.controllers;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.cotiinformatica.dtos.ContatoPostRequestDto;
 import br.com.cotiinformatica.dtos.ContatoPutRequestDto;
+import br.com.cotiinformatica.dtos.ContatoResponseDto;
 import br.com.cotiinformatica.entities.Categoria;
 import br.com.cotiinformatica.entities.Contato;
 import br.com.cotiinformatica.repositories.CategoriaRepository;
@@ -25,6 +29,9 @@ import jakarta.validation.Valid;
 @RequestMapping(value = "/api/contatos")
 public class ContatoController {
 
+	@Autowired
+	ModelMapper modelMapper;
+	
 	@PostMapping
 	public ResponseEntity<String> post(@RequestBody @Valid ContatoPostRequestDto dto) {
 
@@ -104,7 +111,7 @@ public class ContatoController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Contato>> getAll() throws Exception {
+	public ResponseEntity<List<ContatoResponseDto>> getAll() throws Exception {
 
 		try {
 			ContatoRepository contatoRepository = new ContatoRepository();
@@ -113,14 +120,17 @@ public class ContatoController {
 			if (contatos.size() == 0)
 				return ResponseEntity.status(204).body(null);
 
-			return ResponseEntity.status(200).body(contatos);
+			List<ContatoResponseDto> response = contatos.stream()
+					.map(contato -> modelMapper.map(contato, ContatoResponseDto.class)).collect(Collectors.toList());
+			
+			return ResponseEntity.status(200).body(response);
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body(null);
 		}
 	}
 
 	@GetMapping("{id}")
-	public ResponseEntity<Contato> getById(@PathVariable("id") UUID id) throws Exception {
+	public ResponseEntity<ContatoResponseDto> getById(@PathVariable("id") UUID id) throws Exception {
 
 		try {
 			ContatoRepository contatoRepository = new ContatoRepository();
@@ -128,8 +138,10 @@ public class ContatoController {
 
 			if (contato == null)
 				return ResponseEntity.status(204).body(null);
+			
+			ContatoResponseDto response = modelMapper.map(contato, ContatoResponseDto.class);
 
-			return ResponseEntity.status(200).body(contato);
+			return ResponseEntity.status(200).body(response);
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body(null);
 		}

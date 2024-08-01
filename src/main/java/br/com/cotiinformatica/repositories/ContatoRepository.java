@@ -17,7 +17,7 @@ public class ContatoRepository {
 		Connection connection = ConnectionFactory.getConnection();
 
 		PreparedStatement statement = connection
-				.prepareStatement("insert into contato(id, nome, telefone, categoria_id) values (?,?,?,?)");
+				.prepareStatement("INSERT INTO contato(id, nome, telefone, categoria_id) VALUES (?,?,?,?)");
 
 		statement.setObject(1, contato.getId());
 		statement.setString(2, contato.getNome());
@@ -32,7 +32,7 @@ public class ContatoRepository {
 		Connection connection = ConnectionFactory.getConnection();
 
 		PreparedStatement statement = connection
-				.prepareStatement("update contato set nome=?, telefone=?, categoria_id=? where id=?");
+				.prepareStatement("UPDATE contato SET nome=?, telefone=?, categoria_id=? WHERE id=?");
 
 		statement.setString(1, contato.getNome());
 		statement.setString(2, contato.getTelefone());
@@ -46,7 +46,7 @@ public class ContatoRepository {
 	public void delete(Contato contato) throws Exception {
 		Connection connection = ConnectionFactory.getConnection();
 
-		PreparedStatement statement = connection.prepareStatement("delete from contato where id=?");
+		PreparedStatement statement = connection.prepareStatement("DELETE FROM contato WHERE id=?");
 
 		statement.setObject(1, contato.getId());
 		statement.execute();
@@ -58,8 +58,8 @@ public class ContatoRepository {
 		Connection connection = ConnectionFactory.getConnection();
 
 		PreparedStatement statement = connection
-				.prepareStatement("select co.id, co.nome, co.telefone, ca.id as idcategoria, ca.nome as nomecategoria "
-						+ "from contato co inner join categoria ca on ca.id = co.categoria_id " + "order by co.nome");
+				.prepareStatement("SELECT co.id, co.nome, co.telefone, ca.id as idcategoria, ca.nome AS nomecategoria "
+						+ "FROM contato co INNER JOIN categoria ca ON ca.id = co.categoria_id " + "ORDER BY co.nome");
 
 		ResultSet resultSet = statement.executeQuery();
 
@@ -68,7 +68,7 @@ public class ContatoRepository {
 		while (resultSet.next()) {
 			Contato contato = new Contato();
 			contato.setCategoria(new Categoria());
-
+			
 			contato.setId(UUID.fromString(resultSet.getString("id")));
 			contato.setNome(resultSet.getString("nome"));
 			contato.setTelefone(resultSet.getString("telefone"));
@@ -86,8 +86,8 @@ public class ContatoRepository {
 		Connection connection = ConnectionFactory.getConnection();
 
 		PreparedStatement statement = connection
-				.prepareStatement("select co.id, co.nome, co.telefone, ca.id as idcategoria, ca.nome as nomecategoria "
-						+ "from contato co inner join categoria ca on ca.id = co.categoria_id " + "where co.id = ?");
+				.prepareStatement("SELECT co.id, co.nome, co.telefone, ca.id AS idcategoria, ca.nome AS nomecategoria "
+						+ "FROM contato co INNER JOIN categoria ca on ca.id = co.categoria_id " + "WHERE co.id = ?");
 
 		statement.setObject(1, id);
 		ResultSet resultSet = statement.executeQuery();
