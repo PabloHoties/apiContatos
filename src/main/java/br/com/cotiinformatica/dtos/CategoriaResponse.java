@@ -5,10 +5,8 @@ import java.util.UUID;
 import lombok.Data;
 
 @Data
-public class ContatoResponseDto {
+public class CategoriaResponse {
 
 	private UUID id;
 	private String nome;
-	private String telefone;
-	private CategoriaResponseDto categoria;
 }

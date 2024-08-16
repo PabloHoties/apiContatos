@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class ContatoPostRequestDto {
+public class ContatoRequest {
 
 	@Size(min = 8, max = 100, message = "Por favor, informe um nome de 8 a 100 caracteres.")
 	@NotBlank(message = "Por favor, informe o nome do contato.")

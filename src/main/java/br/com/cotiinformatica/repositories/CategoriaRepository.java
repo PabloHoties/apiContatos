@@ -5,11 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.stereotype.Repository;
 
 import br.com.cotiinformatica.entities.Categoria;
 import br.com.cotiinformatica.factories.ConnectionFactory;
 
+@Repository
 public class CategoriaRepository {
 
 	public List<Categoria> findAll() throws Exception {
@@ -35,7 +39,7 @@ public class CategoriaRepository {
 		return lista;
 	}
 
-	public Categoria findById(UUID id) throws Exception {
+	public Optional<Categoria> findById(UUID id) throws Exception {
 		Connection connection = ConnectionFactory.getConnection();
 
 		PreparedStatement statement = connection.prepareStatement("SELECT id, nome FROM categoria WHERE id=?");
@@ -52,6 +56,6 @@ public class CategoriaRepository {
 			categoria.setNome(resultSet.getString("nome"));
 		}
 		connection.close();
-		return categoria;
+		return Optional.ofNullable(categoria);
 	}
 }

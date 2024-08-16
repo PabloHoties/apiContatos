@@ -5,12 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.stereotype.Repository;
 
 import br.com.cotiinformatica.entities.Categoria;
 import br.com.cotiinformatica.entities.Contato;
 import br.com.cotiinformatica.factories.ConnectionFactory;
 
+@Repository
 public class ContatoRepository {
 
 	public void insert(Contato contato) throws Exception {
@@ -82,7 +86,7 @@ public class ContatoRepository {
 		return lista;
 	}
 
-	public Contato findById(UUID id) throws Exception {
+	public Optional<Contato> findById(UUID id) throws Exception {
 		Connection connection = ConnectionFactory.getConnection();
 
 		PreparedStatement statement = connection
@@ -104,6 +108,6 @@ public class ContatoRepository {
 			contato.getCategoria().setNome(resultSet.getString("nomecategoria"));
 		}
 		connection.close();
-		return contato;
+		return Optional.ofNullable(contato);
 	}
 }
