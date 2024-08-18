@@ -19,13 +19,13 @@ import br.com.cotiinformatica.repositories.ContatoRepository;
 public class ContatoService {
 
 	@Autowired
-	ContatoRepository contatoRepository;
+	private ContatoRepository contatoRepository;
 
 	@Autowired
-	CategoriaRepository categoriaRepository;
+	private CategoriaRepository categoriaRepository;
 
 	@Autowired
-	ModelMapper modelMapper;
+	private ModelMapper modelMapper;
 
 	public ContatoResponse criar(ContatoRequest request) throws Exception {
 

@@ -49,4 +49,4 @@ Antes de começar, certifique-se de ter os seguintes pré-requisitos instalados 
 ![](https://github.com/user-attachments/assets/285d060f-30c4-4305-80d9-fa45277f8451)
 
 ## Endpoints da API
-![](https://github.com/user-attachments/assets/1c2caf78-e199-413e-b361-1efe59052fa1)
+![](https://github.com/user-attachments/assets/4e5cf812-0a72-4429-88ff-0c5770cc57a5)

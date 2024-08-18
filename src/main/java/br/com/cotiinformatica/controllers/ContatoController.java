@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 public class ContatoController {
 	
 	@Autowired
-	ContatoService contatoService;
+	private ContatoService contatoService;
 	
 	@PostMapping
 	public ResponseEntity<ContatoResponse> post(@RequestBody @Valid ContatoRequest request) throws Exception {
