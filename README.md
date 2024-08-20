@@ -44,6 +44,7 @@ Antes de começar, certifique-se de ter os seguintes pré-requisitos instalados 
 - Lombok
 - Jakarta Bean Validation
 - ModelMapper
+- Java Faker
 
 ## Diagrama de Classes do relacionamento das entidades
 ![](https://github.com/user-attachments/assets/285d060f-30c4-4305-80d9-fa45277f8451)
