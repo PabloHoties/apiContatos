@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.UUID;
 
 import org.junit.jupiter.api.MethodOrderer;
@@ -41,18 +42,20 @@ public class ContatosTest {
 	ObjectMapper objectMapper;
 
 	static UUID idContato;
+	static UUID idCategoria;
 
 	@Test
 	@Order(1)
 	public void criarContatoComSucessoTest() throws Exception {
 
-		Locale locale = new Locale("pt", "BR");
-
-		Faker faker = new Faker(locale);
+		Faker faker = new Faker(new Locale("pt", "BR"));
+		
+		Random random = new Random();
 
 		ContatoRequest request = new ContatoRequest();
 		request.setNome(faker.name().fullName());
-		request.setTelefone(faker.regexify("\\(\\d{2}\\)\\s\\d{5}-\\d{4}"));
+		request.setTelefone(faker.regexify("\\(\\d{2}\\) \\d{5}-\\d{4}"));
+
 
 		MvcResult resultCategorias = mockMvc.perform(get("/api/categorias").contentType("application/json"))
 				.andExpectAll(status().isOk()).andReturn();
@@ -62,7 +65,7 @@ public class ContatosTest {
 		List<Categoria> categorias = objectMapper.readValue(contentCategoria, new TypeReference<List<Categoria>>() {
 		});
 
-		request.setCategoriaId(categorias.get(0).getId());
+		request.setCategoriaId(categorias.get(random.nextInt(4)).getId());
 
 		MvcResult resultContatos = mockMvc
 				.perform(post("/api/contatos").contentType("application/json")
@@ -76,6 +79,8 @@ public class ContatosTest {
 		assertNotNull(response.getId());
 		assertEquals(response.getNome(), request.getNome());
 		assertEquals(response.getTelefone(), request.getTelefone());
+		
+		idCategoria = categorias.get(random.nextInt(4)).getId();
 	}
 
 }
