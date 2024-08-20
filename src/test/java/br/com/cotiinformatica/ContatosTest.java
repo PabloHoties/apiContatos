@@ -2,6 +2,7 @@ package br.com.cotiinformatica;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,13 +50,12 @@ public class ContatosTest {
 	public void criarContatoComSucessoTest() throws Exception {
 
 		Faker faker = new Faker(new Locale("pt", "BR"));
-		
+
 		Random random = new Random();
 
 		ContatoRequest request = new ContatoRequest();
 		request.setNome(faker.name().fullName());
 		request.setTelefone(faker.regexify("\\(\\d{2}\\) \\d{5}-\\d{4}"));
-
 
 		MvcResult resultCategorias = mockMvc.perform(get("/api/categorias").contentType("application/json"))
 				.andExpectAll(status().isOk()).andReturn();
@@ -79,8 +79,31 @@ public class ContatosTest {
 		assertNotNull(response.getId());
 		assertEquals(response.getNome(), request.getNome());
 		assertEquals(response.getTelefone(), request.getTelefone());
-		
+
 		idCategoria = categorias.get(random.nextInt(4)).getId();
 	}
 
+	@Test
+	@Order(2)
+	public void criarContatoComDadosInvalidosTest() throws Exception {
+
+		ContatoRequest request = new ContatoRequest();
+		request.setNome("");
+		request.setTelefone("");
+		request.setCategoriaId(null);
+
+		MvcResult result = mockMvc
+				.perform(post("/api/contatos").contentType("application/json")
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpectAll(status().isBadRequest()).andReturn();
+		
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+		System.out.println(content);
+		
+		assertTrue(content.contains("categoriaId: Por favor, informe o id da categoria."));
+		assertTrue(content.contains("nome: Por favor, informe o nome do contato."));
+		assertTrue(content.contains("nome: Por favor, informe um nome de 8 a 100 caracteres."));
+		assertTrue(content.contains("telefone: Por favor, informe o telefone do contato."));
+		assertTrue(content.contains("telefone: Por favor, informe o telefone no formato: '(99) 99999-9999'."));
+	}
 }
