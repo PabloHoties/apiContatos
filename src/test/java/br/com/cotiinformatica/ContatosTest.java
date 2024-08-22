@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
@@ -80,6 +81,7 @@ public class ContatosTest {
 		assertEquals(response.getNome(), request.getNome());
 		assertEquals(response.getTelefone(), request.getTelefone());
 
+		idContato = response.getId();
 		idCategoria = categorias.get(random.nextInt(4)).getId();
 	}
 
@@ -96,14 +98,39 @@ public class ContatosTest {
 				.perform(post("/api/contatos").contentType("application/json")
 						.content(objectMapper.writeValueAsString(request)))
 				.andExpectAll(status().isBadRequest()).andReturn();
-		
+
 		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
 		System.out.println(content);
-		
+
 		assertTrue(content.contains("categoriaId: Por favor, informe o id da categoria."));
 		assertTrue(content.contains("nome: Por favor, informe o nome do contato."));
 		assertTrue(content.contains("nome: Por favor, informe um nome de 8 a 100 caracteres."));
 		assertTrue(content.contains("telefone: Por favor, informe o telefone do contato."));
 		assertTrue(content.contains("telefone: Por favor, informe o telefone no formato: '(99) 99999-9999'."));
+	}
+
+	@Test
+	@Order(3)
+	public void atualizarContatoComSucessoTest() throws Exception {
+
+		Faker faker = new Faker(new Locale("pt", "BR"));
+
+		ContatoRequest request = new ContatoRequest();
+		request.setNome(faker.name().fullName());
+		request.setTelefone(faker.regexify("\\(\\d{2}\\) \\d{5}-\\d{4}"));
+		request.setCategoriaId(idCategoria);
+
+		MvcResult result = mockMvc.perform(
+				put("/api/contatos/" + idContato).contentType("application/json").content(objectMapper.writeValueAsString(request)))
+				.andExpectAll(status().isOk()).andReturn();
+		
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+		
+		ContatoResponse response = objectMapper.readValue(content, ContatoResponse.class);
+		assertNotNull(response.getId());
+		assertEquals(response.getNome(), request.getNome());
+		assertEquals(response.getTelefone(), request.getTelefone());
+		assertEquals(response.getCategoria().getId(), idCategoria);
+		
 	}
 }
