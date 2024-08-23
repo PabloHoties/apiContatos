@@ -8,7 +8,7 @@ CREATE TABLE categoria(
 CREATE TABLE contato(
 
 			id				UUID				PRIMARY KEY,
-			nome			VARCHAR(25)		NOT NULL,
+			nome			VARCHAR(50)		NOT NULL,
 			telefone			VARCHAR(15)		NOT NULL,
 			categoria_id		uuid				NOT NULL,
 			FOREIGN KEY(categoria_id)

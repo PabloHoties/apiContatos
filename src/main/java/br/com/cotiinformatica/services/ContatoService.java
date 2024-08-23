@@ -36,7 +36,7 @@ public class ContatoService {
 		contato.setTelefone(request.getTelefone());
 
 		Categoria categoria = categoriaRepository.findById(request.getCategoriaId())
-				.orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada. Verifique o ID informado"));
+				.orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada. Verifique o ID informado."));
 
 		contato.setCategoria(categoria);
 

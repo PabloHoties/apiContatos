@@ -87,6 +87,27 @@ public class ContatosTest {
 
 	@Test
 	@Order(2)
+	public void criarContatoComIdDaCategoriaInvalidoTest() throws Exception {
+
+		Faker faker = new Faker(new Locale("pt", "BR"));
+
+		ContatoRequest request = new ContatoRequest();
+		request.setNome(faker.name().fullName());
+		request.setTelefone(faker.regexify("\\(\\d{2}\\) \\d{5}-\\d{4}"));
+		request.setCategoriaId(UUID.randomUUID());
+
+		MvcResult result = mockMvc
+				.perform(post("/api/contatos").contentType("application/json")
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpectAll(status().isBadRequest()).andReturn();
+
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+		assertTrue(content.contains("Categoria não encontrada. Verifique o ID informado."));
+	}
+
+	@Test
+	@Order(3)
 	public void criarContatoComDadosInvalidosTest() throws Exception {
 
 		ContatoRequest request = new ContatoRequest();
@@ -100,7 +121,6 @@ public class ContatosTest {
 				.andExpectAll(status().isBadRequest()).andReturn();
 
 		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-		System.out.println(content);
 
 		assertTrue(content.contains("categoriaId: Por favor, informe o id da categoria."));
 		assertTrue(content.contains("nome: Por favor, informe o nome do contato."));
@@ -110,7 +130,7 @@ public class ContatosTest {
 	}
 
 	@Test
-	@Order(3)
+	@Order(4)
 	public void atualizarContatoComSucessoTest() throws Exception {
 
 		Faker faker = new Faker(new Locale("pt", "BR"));
@@ -120,17 +140,82 @@ public class ContatosTest {
 		request.setTelefone(faker.regexify("\\(\\d{2}\\) \\d{5}-\\d{4}"));
 		request.setCategoriaId(idCategoria);
 
-		MvcResult result = mockMvc.perform(
-				put("/api/contatos/" + idContato).contentType("application/json").content(objectMapper.writeValueAsString(request)))
-				.andExpectAll(status().isOk()).andReturn();
-		
+		MvcResult result = mockMvc.perform(put("/api/contatos/" + idContato).contentType("application/json")
+				.content(objectMapper.writeValueAsString(request))).andExpectAll(status().isOk()).andReturn();
+
 		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-		
+
 		ContatoResponse response = objectMapper.readValue(content, ContatoResponse.class);
+
 		assertNotNull(response.getId());
 		assertEquals(response.getNome(), request.getNome());
 		assertEquals(response.getTelefone(), request.getTelefone());
 		assertEquals(response.getCategoria().getId(), idCategoria);
-		
 	}
+
+	@Test
+	@Order(5)
+	public void atualizarContatoComIdDoContatoInvalidoTest() throws Exception {
+
+		Faker faker = new Faker(new Locale("pt", "BR"));
+
+		ContatoRequest request = new ContatoRequest();
+		request.setNome(faker.name().fullName());
+		request.setTelefone(faker.regexify("\\(\\d{2}\\) \\d{5}-\\d{4}"));
+		request.setCategoriaId(idCategoria);
+
+		MvcResult result = mockMvc
+				.perform(put("/api/contatos/" + UUID.randomUUID()).contentType("application/json")
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpectAll(status().isBadRequest()).andReturn();
+
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+		assertTrue(content.contains("Contato não encontrado. Verifique o ID informado."));
+	}
+
+	@Test
+	@Order(6)
+	public void atualizarContatoComIdDaCategoriaInvalidoTest() throws Exception {
+
+		Faker faker = new Faker(new Locale("pt", "BR"));
+
+		ContatoRequest request = new ContatoRequest();
+		request.setNome(faker.name().fullName());
+		request.setTelefone(faker.regexify("\\(\\d{2}\\) \\d{5}-\\d{4}"));
+		request.setCategoriaId(UUID.randomUUID());
+
+		MvcResult result = mockMvc
+				.perform(put("/api/contatos/" + idContato).contentType("application/json")
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpectAll(status().isBadRequest()).andReturn();
+
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+		assertTrue(content.contains("Categoria não encontrada. Verifique o ID informado."));
+	}
+
+	@Test
+	@Order(7)
+	public void atualizarContatoComDadosInvalidosTest() throws Exception {
+
+		ContatoRequest request = new ContatoRequest();
+		request.setNome("");
+		request.setTelefone("");
+		request.setCategoriaId(null);
+
+		MvcResult result = mockMvc
+				.perform(put("/api/contatos/" + idContato).contentType("application/json")
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpectAll(status().isBadRequest()).andReturn();
+
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+		assertTrue(content.contains("categoriaId: Por favor, informe o id da categoria."));
+		assertTrue(content.contains("nome: Por favor, informe o nome do contato."));
+		assertTrue(content.contains("nome: Por favor, informe um nome de 8 a 100 caracteres."));
+		assertTrue(content.contains("telefone: Por favor, informe o telefone do contato."));
+		assertTrue(content.contains("telefone: Por favor, informe o telefone no formato: '(99) 99999-9999'."));
+	}
+
 }
