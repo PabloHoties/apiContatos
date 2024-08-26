@@ -3,6 +3,7 @@ package br.com.cotiinformatica;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -66,7 +67,7 @@ public class ContatosTest {
 		List<Categoria> categorias = objectMapper.readValue(contentCategoria, new TypeReference<List<Categoria>>() {
 		});
 
-		request.setCategoriaId(categorias.get(random.nextInt(4)).getId());
+		request.setCategoriaId(categorias.get(random.nextInt(categorias.size())).getId());
 
 		MvcResult resultContatos = mockMvc
 				.perform(post("/api/contatos").contentType("application/json")
@@ -218,4 +219,66 @@ public class ContatosTest {
 		assertTrue(content.contains("telefone: Por favor, informe o telefone no formato: '(99) 99999-9999'."));
 	}
 
+	@Test
+	@Order(8)
+	public void obterContatoComSucessoTest() throws Exception {
+
+		MvcResult result = mockMvc.perform(get("/api/contatos/" + idContato).contentType("application/json"))
+				.andExpectAll(status().isOk()).andReturn();
+
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+		assertTrue(content.contains(idContato.toString()));
+	}
+
+	@Test
+	@Order(9)
+	public void obterContatoComIdInvalidoTest() throws Exception {
+
+		MvcResult result = mockMvc.perform(get("/api/contatos/" + UUID.randomUUID()).contentType("application/json"))
+				.andExpectAll(status().isBadRequest()).andReturn();
+
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+		assertTrue(content.contains("Contato não encontrado. Verifique o ID informado."));
+	}
+
+	@Test
+	@Order(10)
+	public void consultarContatosComSucessoTest() throws Exception {
+
+		MvcResult result = mockMvc.perform(get("/api/contatos").contentType("application/json"))
+				.andExpectAll(status().isOk()).andReturn();
+
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+		assertTrue(content.contains(idContato.toString()));
+	}
+
+	@Test
+	@Order(11)
+	public void excluirContatoComSucessoTest() throws Exception {
+
+		MvcResult result = mockMvc.perform(delete("/api/contatos/" + idContato).contentType("application/json"))
+				.andExpectAll(status().isOk()).andReturn();
+
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+		ContatoResponse response = objectMapper.readValue(content, ContatoResponse.class);
+
+		assertEquals(response.getId(), idContato);
+		assertEquals(response.getCategoria().getId(), idCategoria);
+	}
+
+	@Test
+	@Order(12)
+	public void excluirContatoComIdInvalidoTest() throws Exception {
+
+		MvcResult result = mockMvc.perform(delete("/api/contatos/" + UUID.randomUUID()).contentType("application/json"))
+				.andExpectAll(status().isBadRequest()).andReturn();
+		
+		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+		
+		assertTrue(content.contains("Contato não encontrado. Verifique o ID informado."));
+	}
 }
