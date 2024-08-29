@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.com.cotiinformatica.entities.Categoria;
@@ -16,9 +17,12 @@ import br.com.cotiinformatica.factories.ConnectionFactory;
 
 @Repository
 public class ContatoRepository {
+	
+	@Autowired
+	private ConnectionFactory connectionFactory;
 
 	public void insert(Contato contato) throws Exception {
-		Connection connection = ConnectionFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 
 		PreparedStatement statement = connection
 				.prepareStatement("INSERT INTO contato(id, nome, telefone, categoria_id) VALUES (?,?,?,?)");
@@ -33,7 +37,7 @@ public class ContatoRepository {
 	}
 
 	public void update(Contato contato) throws Exception {
-		Connection connection = ConnectionFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 
 		PreparedStatement statement = connection
 				.prepareStatement("UPDATE contato SET nome=?, telefone=?, categoria_id=? WHERE id=?");
@@ -48,7 +52,7 @@ public class ContatoRepository {
 	}
 
 	public void delete(Contato contato) throws Exception {
-		Connection connection = ConnectionFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 
 		PreparedStatement statement = connection.prepareStatement("DELETE FROM contato WHERE id=?");
 
@@ -59,7 +63,7 @@ public class ContatoRepository {
 	}
 
 	public List<Contato> findAll() throws Exception {
-		Connection connection = ConnectionFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 
 		PreparedStatement statement = connection
 				.prepareStatement("SELECT co.id, co.nome, co.telefone, ca.id as idcategoria, ca.nome AS nomecategoria "
@@ -87,7 +91,7 @@ public class ContatoRepository {
 	}
 
 	public Optional<Contato> findById(UUID id) throws Exception {
-		Connection connection = ConnectionFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 
 		PreparedStatement statement = connection
 				.prepareStatement("SELECT co.id, co.nome, co.telefone, ca.id AS idcategoria, ca.nome AS nomecategoria "

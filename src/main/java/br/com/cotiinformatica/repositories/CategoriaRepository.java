@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.com.cotiinformatica.entities.Categoria;
@@ -15,9 +16,12 @@ import br.com.cotiinformatica.factories.ConnectionFactory;
 
 @Repository
 public class CategoriaRepository {
+	
+	@Autowired
+	private ConnectionFactory connectionFactory;
 
 	public List<Categoria> findAll() throws Exception {
-		Connection connection = ConnectionFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 
 		PreparedStatement statement = connection.prepareStatement(
 				"SELECT id, nome FROM categoria ORDER BY nome");
@@ -40,7 +44,7 @@ public class CategoriaRepository {
 	}
 
 	public Optional<Categoria> findById(UUID id) throws Exception {
-		Connection connection = ConnectionFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 
 		PreparedStatement statement = connection.prepareStatement("SELECT id, nome FROM categoria WHERE id=?");
 

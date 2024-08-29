@@ -1,17 +1,18 @@
 package br.com.cotiinformatica.factories;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class ConnectionFactory {
 
-	private static String driver = "org.postgresql.Driver";
-	private static String url = "jdbc:postgresql://localhost:5432/bd_apiContatos";
-	private static String user = "postgres";
-	private static String password = "coti";
+    @Autowired
+    private DataSource dataSource;
 
-	public static Connection getConnection() throws Exception {
-		Class.forName(driver);
-		return DriverManager.getConnection(url, user, password);
-	}
+    public Connection getConnection() throws Exception {
+        return dataSource.getConnection();
+    }
 }
