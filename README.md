@@ -1,9 +1,14 @@
 # apiContatos
 
+> **API Funcionando na Web!**  
+> Teste a versão online da API e explore os endpoints pelo Swagger:  
+> 
+> **[Railway](https://apicontatos.up.railway.app/swagger-ui/index.html)**  
+> **[Render](https://apicontatos.onrender.com/swagger-ui/index.html)**   _(Pode demorar de um a dois minutos para abrir o link)_
+
 Este é um projeto Java Spring Boot que maneja as entidades "Contato" e "Categoria" usando uma API RESTFUL.
 
 ## Pré-requisitos
-
 Antes de começar, certifique-se de ter os seguintes pré-requisitos instalados (entre parênteses com asterisco estão as versões que utilizei, outras versões também podem funcionar.):
 
 - [Java Development Kit (JDK)](https://www.oracle.com/java/technologies/javase-downloads.html) (*17)
