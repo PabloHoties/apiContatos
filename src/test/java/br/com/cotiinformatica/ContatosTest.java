@@ -100,7 +100,7 @@ public class ContatosTest {
 		MvcResult result = mockMvc
 				.perform(post("/api/contatos").contentType("application/json")
 						.content(objectMapper.writeValueAsString(request)))
-				.andExpectAll(status().isBadRequest()).andReturn();
+				.andExpectAll(status().isNotFound()).andReturn();
 
 		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
 
@@ -168,7 +168,7 @@ public class ContatosTest {
 		MvcResult result = mockMvc
 				.perform(put("/api/contatos/" + UUID.randomUUID()).contentType("application/json")
 						.content(objectMapper.writeValueAsString(request)))
-				.andExpectAll(status().isBadRequest()).andReturn();
+				.andExpectAll(status().isNotFound()).andReturn();
 
 		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
 
@@ -189,7 +189,7 @@ public class ContatosTest {
 		MvcResult result = mockMvc
 				.perform(put("/api/contatos/" + idContato).contentType("application/json")
 						.content(objectMapper.writeValueAsString(request)))
-				.andExpectAll(status().isBadRequest()).andReturn();
+				.andExpectAll(status().isNotFound()).andReturn();
 
 		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
 
@@ -236,7 +236,7 @@ public class ContatosTest {
 	public void obterContatoComIdInvalidoTest() throws Exception {
 
 		MvcResult result = mockMvc.perform(get("/api/contatos/" + UUID.randomUUID()).contentType("application/json"))
-				.andExpectAll(status().isBadRequest()).andReturn();
+				.andExpectAll(status().isNotFound()).andReturn();
 
 		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
 
@@ -259,15 +259,8 @@ public class ContatosTest {
 	@Order(11)
 	public void excluirContatoComSucessoTest() throws Exception {
 
-		MvcResult result = mockMvc.perform(delete("/api/contatos/" + idContato).contentType("application/json"))
-				.andExpectAll(status().isOk()).andReturn();
-
-		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-
-		ContatoResponse response = objectMapper.readValue(content, ContatoResponse.class);
-
-		assertEquals(response.getId(), idContato);
-		assertEquals(response.getCategoria().getId(), idCategoria);
+		mockMvc.perform(delete("/api/contatos/" + idContato).contentType("application/json"))
+				.andExpectAll(status().isNoContent()).andReturn();
 	}
 
 	@Test
@@ -275,7 +268,7 @@ public class ContatosTest {
 	public void excluirContatoComIdInvalidoTest() throws Exception {
 
 		MvcResult result = mockMvc.perform(delete("/api/contatos/" + UUID.randomUUID()).contentType("application/json"))
-				.andExpectAll(status().isBadRequest()).andReturn();
+				.andExpectAll(status().isNotFound()).andReturn();
 		
 		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
 		

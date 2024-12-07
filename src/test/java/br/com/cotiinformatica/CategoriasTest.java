@@ -66,7 +66,7 @@ public class CategoriasTest {
 	public void obterCategoriaComIdInvalidoTest() throws Exception {
 
 		MvcResult result = mockMvc.perform(get("/api/categorias/" + UUID.randomUUID()).contentType("application/json"))
-				.andExpectAll(status().isBadRequest()).andReturn();
+				.andExpectAll(status().isNotFound()).andReturn();
 
 		String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
 		assertTrue(content.contains("Categoria não encontrada. Verifique o ID informado."));
