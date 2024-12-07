@@ -12,21 +12,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.cotiinformatica.dtos.CategoriaResponse;
 import br.com.cotiinformatica.services.CategoriaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping(value = "/api/categorias")
+@Tag(name = "Categorias", description = "Operações de consultas de categorias")
 public class CategoriaController {
 
 	@Autowired
 	private CategoriaService categoriaService;
 
+	@Operation(summary = "Consulta categorias", description = "Retorna uma lista contendo as categorias que um contato pode possuir.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Sucesso na obtenção da lista de categorias") })
 	@GetMapping
 	public ResponseEntity<List<CategoriaResponse>> getAll() throws Exception {
-		return ResponseEntity.status(200).body(categoriaService.consultar());
+		return ResponseEntity.ok(categoriaService.consultar());
 	}
 
+	@Operation(summary = "Consulta contato pelo UUID")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Categoria encontrada com sucesso"),
+			@ApiResponse(responseCode = "404", description = "Categoria não encontrada") })
 	@GetMapping("{id}")
 	public ResponseEntity<CategoriaResponse> getById(@PathVariable("id") UUID id) throws Exception {
-		return ResponseEntity.status(200).body(categoriaService.obterPorId(id));
+		return ResponseEntity.ok(categoriaService.obterPorId(id));
 	}
 }

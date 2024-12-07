@@ -5,7 +5,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springdoc.api.OpenApiResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.cotiinformatica.dtos.ContatoRequest;
@@ -35,8 +37,8 @@ public class ContatoService {
 		contato.setNome(request.getNome());
 		contato.setTelefone(request.getTelefone());
 
-		Categoria categoria = categoriaRepository.findById(request.getCategoriaId())
-				.orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada. Verifique o ID informado."));
+		Categoria categoria = categoriaRepository.findById(request.getCategoriaId()).orElseThrow(
+				() -> new OpenApiResourceNotFoundException("Categoria não encontrada. Verifique o ID informado."));
 
 		contato.setCategoria(categoria);
 
@@ -47,11 +49,11 @@ public class ContatoService {
 
 	public ContatoResponse atualizar(UUID id, ContatoRequest request) throws Exception {
 
-		Contato contato = contatoRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Contato não encontrado. Verifique o ID informado."));
+		Contato contato = contatoRepository.findById(id).orElseThrow(
+				() -> new OpenApiResourceNotFoundException("Contato não encontrado. Verifique o ID informado."));
 
-		Categoria categoria = categoriaRepository.findById(request.getCategoriaId())
-				.orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada. Verifique o ID informado."));
+		Categoria categoria = categoriaRepository.findById(request.getCategoriaId()).orElseThrow(
+				() -> new OpenApiResourceNotFoundException("Categoria não encontrada. Verifique o ID informado."));
 
 		contato.setNome(request.getNome());
 		contato.setTelefone(request.getTelefone());
@@ -62,28 +64,29 @@ public class ContatoService {
 		return modelMapper.map(contato, ContatoResponse.class);
 	}
 
-	public ContatoResponse excluir(UUID id) throws Exception {
+	public void excluir(UUID id) throws Exception {
 
-		Contato contato = contatoRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Contato não encontrado. Verifique o ID informado."));
+		Contato contato = contatoRepository.findById(id).orElseThrow(
+				() -> new OpenApiResourceNotFoundException("Contato não encontrado. Verifique o ID informado."));
 
 		contatoRepository.delete(contato);
-
-		return modelMapper.map(contato, ContatoResponse.class);
 	}
 
-	public List<ContatoResponse> consultar() throws Exception {
+	public ResponseEntity<List<ContatoResponse>> consultar() throws Exception {
 
 		List<Contato> contatos = contatoRepository.findAll();
 
-		return contatos.stream().map(contato -> modelMapper.map(contato, ContatoResponse.class))
-				.collect(Collectors.toList());
+		if (contatos.isEmpty())
+			return ResponseEntity.noContent().build();
+
+		return ResponseEntity.ok(contatos.stream().map(contato -> modelMapper.map(contato, ContatoResponse.class))
+				.collect(Collectors.toList()));
 	}
 
 	public ContatoResponse obterPorId(UUID id) throws Exception {
 
-		Contato contato = contatoRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Contato não encontrado. Verifique o ID informado."));
+		Contato contato = contatoRepository.findById(id).orElseThrow(
+				() -> new OpenApiResourceNotFoundException("Contato não encontrado. Verifique o ID informado."));
 
 		return modelMapper.map(contato, ContatoResponse.class);
 	}
